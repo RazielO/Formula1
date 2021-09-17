@@ -1,6 +1,7 @@
 import { writable } from "svelte/store";
 
 export const startSeason = writable()
+export const seasonSelected = writable()
 export const rounds = writable({})
 export const drivers = writable({})
 
