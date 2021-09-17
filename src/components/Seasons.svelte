@@ -1,37 +1,14 @@
 <script>
     import Loader from "./Loader.svelte";
 
-    import { startSeason, rounds } from "../stores";
+    import { startSeason, rounds, seasonSelected } from "../stores";
     import { onMount } from "svelte";
-
-    export let seasonSelected = 2000;
 
     let lastSeason;
 
-    const getRounds = async () => {
-        let url = `https://ergast.com/api/f1/${seasonSelected}.json`;
-
-        if ($rounds[seasonSelected] === undefined) {
-            let response = await fetch(url).then((data) => data.json());
-            rounds.update((val) => {
-                val[seasonSelected] = response.MRData.RaceTable.Races.map(
-                    (race) => {
-                        return {
-                            round: race.round,
-                            name: race.raceName,
-                            circuit: race.Circuit.circuitName,
-                            location: `${race.Circuit.Location.locality}, ${race.Circuit.Location.country}`,
-                        };
-                    }
-                );
-                return val;
-            });
-        }
-    };
-
     onMount(async () => {
         lastSeason = new Date().getFullYear();
-        seasonSelected = lastSeason
+        seasonSelected.set(lastSeason);
 
         if ($startSeason === undefined) {
             let response = await fetch(
@@ -41,8 +18,6 @@
                 parseInt(response.MRData.SeasonTable.Seasons[0].season)
             );
         }
-
-        getRounds();
     });
 </script>
 
@@ -50,8 +25,8 @@
     <select
         name="season"
         id="season"
-        bind:value={seasonSelected}
-        on:change={getRounds}
+        bind:value={$seasonSelected}
+        on:change={() => seasonSelected.set($seasonSelected)}
     >
         {#each Array.from(new Array(lastSeason + 1 - $startSeason), (x, i) => i + $startSeason).reverse() as season}
             <option value={season}>{season}</option>
