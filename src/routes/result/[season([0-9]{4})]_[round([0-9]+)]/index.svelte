@@ -21,6 +21,10 @@
 
     let url;
 
+    const getColor = () => {
+        return "#" + Math.random().toString(16).slice(2, 8);
+    };
+
     const getDrivers = (results) => {
         return results.map((race) => {
             return {
@@ -51,11 +55,7 @@
                 val[race.Driver.driverId] = {
                     code: race.Driver.code,
                     name: `${race.Driver.givenName} ${race.Driver.familyName}`,
-                    color: `rgb(${Math.round(
-                        Math.random() * 255
-                    )}, ${Math.round(Math.random() * 255)}, ${Math.round(
-                        Math.random() * 255
-                    )})`,
+                    color: getColor(),
                 };
                 return val;
             });
