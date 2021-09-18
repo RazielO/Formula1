@@ -1,50 +1,83 @@
 <script>
-	import successkid from 'images/successkid.jpg';
+    import { onMount } from "svelte";
+
+    import Loader from "../components/Loader.svelte";
+
+    import { rounds, seasonSelected } from "../stores.js";
+
+    const getRounds = async () => {
+        let url = `https://ergast.com/api/f1/${$seasonSelected}.json`;
+
+        if (
+            $rounds[$seasonSelected] === undefined ||
+            $rounds[$seasonSelected].length === 0
+        ) {
+            let response = await fetch(url).then((data) => data.json());
+            rounds.update((val) => {
+                val[$seasonSelected] = response.MRData.RaceTable.Races.map(
+                    (race) => {
+                        return {
+                            round: race.round,
+                            name: race.raceName,
+                            circuit: race.Circuit.circuitName,
+                            location: `${race.Circuit.Location.locality}, ${race.Circuit.Location.country}`,
+                        };
+                    }
+                );
+                return val;
+            });
+        }
+    };
+
+    onMount(() => {
+        seasonSelected.subscribe(() => {
+            getRounds();
+        });
+    });
 </script>
 
-<style>
-	h1, figure, p {
-		text-align: center;
-		margin: 0 auto;
-	}
+<svelte:head
+    ><title>{$seasonSelected} Formula One World Championship</title
+    ></svelte:head
+>
 
-	h1 {
-		font-size: 2.8em;
-		text-transform: uppercase;
-		font-weight: 700;
-		margin: 0 0 0.5em 0;
-	}
+{#if $seasonSelected !== undefined && $rounds[$seasonSelected] !== undefined}
+    <h1>{$seasonSelected} Formula One World Championship</h1>
+    <h2>Races</h2>
 
-	figure {
-		margin: 0 0 1em 0;
-	}
-
-	img {
-		width: 100%;
-		max-width: 400px;
-		margin: 0 0 1em 0;
-	}
-
-	p {
-		margin: 1em auto;
-	}
-
-	@media (min-width: 480px) {
-		h1 {
-			font-size: 4em;
-		}
-	}
-</style>
-
-<svelte:head>
-	<title>Sapper project template</title>
-</svelte:head>
-
-<h1>Great success!</h1>
-
-<figure>
-	<img alt="Success Kid" src="{successkid}">
-	<figcaption>Have fun with Sapper!</figcaption>
-</figure>
-
-<p><strong>Try editing this file (src/routes/index.svelte) to test live reloading.</strong></p>
+    <table>
+        <thead>
+            <th>No.</th>
+            <th>GP</th>
+            <th>Circuit</th>
+            <th />
+            <th />
+        </thead>
+        <tbody>
+            {#each $rounds[$seasonSelected] as race}
+                <tr>
+                    <td>{race.round}</td>
+                    <td>{race.name}</td>
+                    <td>
+                        <div class="tooltip">
+                            {race.circuit}
+                            <span class="tooltiptext">{race.location}</span>
+                        </div>
+                    </td>
+                    <!-- <td>
+                        <button on:click={() => goToQualy(race.round)}
+                            >Qualy</button
+                        >
+                    </td>
+                    <td>
+                        <button on:click={() => goToRace(race.round)}
+                            >Result</button
+                        >
+                    </td> -->
+                </tr>
+            {/each}
+        </tbody>
+    </table>
+{:else}
+    <Loader />
+{/if}
