@@ -7,6 +7,9 @@
 </script>
 
 <script>
+    import { goto } from "@sapper/app";
+    import { onMount } from "svelte";
+
     import Loader from "../../../components/Loader.svelte";
 
     import { rounds, nationalities } from "../../../stores.js";
@@ -15,6 +18,14 @@
 
     let season = data.season;
     let round = data.round;
+
+    onMount(() => {
+        if ($rounds[season] === undefined) {
+            goto("/");
+        } else if ($rounds[season][round] === undefined) {
+            goto("/");
+        }
+    });
 </script>
 
 {#if $rounds[season] !== undefined}
