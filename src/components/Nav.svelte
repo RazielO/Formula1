@@ -6,38 +6,52 @@
 
 <nav>
 	<ul>
-		<li>
-			<Seasons />
-		</li>
+		{#if segment !== "qualy"}
+			<li>
+				<Seasons />
+			</li>
+			
+			<li>
+				<a
+					aria-current={segment === undefined ? "page" : undefined}
+					href=".">Races</a
+				>
+			</li>
 
-		<li>
-			<a
-				aria-current={segment === undefined ? "page" : undefined}
-				href=".">Races</a
-			>
-		</li>
-		<li>
-			<a
-				aria-current={segment === "constructor_standings" ? "page" : undefined}
-				href="constructor_standings">Constructor Standings</a
-			>
-		</li>
-		<li>
-			<a
-				aria-current={segment === "about" ? "page" : undefined}
-				href="about">about</a
-			>
-		</li>
+			<li>
+				<a
+					aria-current={segment === "constructor_standings"
+						? "page"
+						: undefined}
+					href="constructor_standings">Constructor Standings</a
+				>
+			</li>
+			<li>
+				<a
+					aria-current={segment === "about" ? "page" : undefined}
+					href="about">about</a
+				>
+			</li>
 
-		<!-- for the blog link, we're using rel=prefetch so that Sapper prefetches
+			<!-- for the blog link, we're using rel=prefetch so that Sapper prefetches
 		     the blog data when we hover over the link or tap it on a touchscreen -->
-		<li>
-			<a
-				rel="prefetch"
-				aria-current={segment === "blog" ? "page" : undefined}
-				href="blog">blog</a
-			>
-		</li>
+			<li>
+				<a
+					rel="prefetch"
+					aria-current={segment === "blog" ? "page" : undefined}
+					href="blog">blog</a
+				>
+			</li>
+		{:else}
+			<li>
+				<a
+					aria-current={segment === undefined ? "page" : undefined}
+					href="/"
+				>
+					<i class="fas fa-arrow-left" /></a
+				>
+			</li>
+		{/if}
 	</ul>
 </nav>
 
