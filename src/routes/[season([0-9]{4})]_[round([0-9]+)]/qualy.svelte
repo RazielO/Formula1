@@ -1,6 +1,10 @@
 <script context="module">
     export function preload({ params }) {
-        const data = { season: params.season, round: params.round };
+        const data = {
+            season: params.season,
+            round: params.round - 1,
+            roundApi: params.round,
+        };
 
         return { data };
     }
@@ -13,58 +17,32 @@
     import { onMount } from "svelte";
 
     import { rounds, nationalities } from "../../stores.js";
+    import * as consumer from "../../api_consumer/consumer/qualy.js";
 
     export let data;
 
     let season = data.season;
     let round = data.round;
-
-    const getTimes = (results) => {
-        return results.map((race) => {
-            return {
-                driver: `${race.Driver.givenName} ${race.Driver.familyName}`,
-                number: race.number,
-                position: race.position,
-                nationality: race.Driver.nationality,
-                constructor: race.Constructor.name,
-                q1: race.Q1,
-                q2: race.Q2,
-                q3: race.Q3,
-            };
-        });
-    };
+    let roundApi = data.roundApi;
 
     const getQualy = async () => {
-        let url = `http://ergast.com/api/f1/${season}/${round}/qualifying.json`;
-
         if ($rounds[season] === undefined) {
             goto("/");
         } else if ($rounds[season][round] === undefined) {
             goto("/");
         } else {
             if (!Object.keys($rounds[season][round]).includes("qualy")) {
-                let response = await fetch(url).then((data) => data.json());
+                let result = await consumer.getQualy(season, roundApi);
 
-                if (response.MRData.RaceTable.Races.length !== 0) {
-                    let results =
-                        response.MRData.RaceTable.Races[0].QualifyingResults;
-
-                    rounds.update((val) => {
-                        val[season][round].qualy = getTimes(results);
-                        return val;
-                    });
-                } else {
-                    rounds.update((val) => {
-                        val[season][round].qualy = [];
-                        return val;
-                    });
-                }
+                rounds.update((value) => {
+                    value[season][round].qualy = result;
+                    return value;
+                });
             }
         }
     };
 
     onMount(() => {
-        round = round - 1;
         rounds.subscribe(() => getQualy());
     });
 </script>
@@ -111,8 +89,8 @@
                         </td>
                         <td>{driver.constructor}</td>
                         <td>{driver.q1}</td>
-                        <td>{driver.q2 !== undefined ? driver.q2 : ""}</td>
-                        <td>{driver.q3 !== undefined ? driver.q3 : ""}</td>
+                        <td>{driver.q2}</td>
+                        <td>{driver.q3}</td>
                     </tr>
                 {/each}
             </tbody>

@@ -1,81 +1,34 @@
 <script>
 	import Seasons from "./Seasons.svelte";
 
+	export let segment;
+
 	import { stores } from "@sapper/app";
 	const { page } = stores();
 
-	export let segment;
+	const regex = /(\d{4})_(\d+)/g;
+	let path;
+
+	const createPath = () => {
+		let parts = regex.exec(segment);
+
+		if (parts !== null) {
+			return `${parts[1]}_${parts[2]}`;
+		} else {
+			return "";
+		}
+	};
+
+	$: {
+		if (segment !== undefined && segment.match(regex)) {
+			path = createPath();
+		}
+	}
 </script>
 
 <nav>
 	<ul>
-		{#if segment === "qualy"}
-			<li>
-				<a
-					aria-current={segment === undefined ? "page" : undefined}
-					href="/"
-				>
-					<i class="fas fa-arrow-left" /></a
-				>
-			</li>
-		{:else if segment === "result"}
-			<li>
-				<a
-					aria-current={segment === undefined ? "page" : undefined}
-					href="/"
-				>
-					<i class="fas fa-arrow-left" /></a
-				>
-			</li>
-			<li>
-				<a
-					aria-current={segment === "results" ? "page" : undefined}
-					href={$page.path
-						.replace("/graph", "")
-						.replace("/laps_lead", "")
-						.replace("/fastest_lap", "")}
-				>
-					Position
-				</a>
-			</li>
-			<li>
-				<a
-					aria-current={segment === "laps_lead" ? "page" : undefined}
-					href="{$page.path
-						.replace('/graph', '')
-						.replace('/laps_lead', '')
-						.replace('/fastest_lap', '')}/laps_lead"
-				>
-					Laps lead
-				</a>
-			</li>
-			<li>
-				<a
-					aria-current={segment === "fastest_lap"
-						? "page"
-						: undefined}
-					href="{$page.path
-						.replace('/graph', '')
-						.replace('/laps_lead', '')
-						.replace('/fastest_lap', '')}/fastest_lap"
-				>
-					Fastest laps
-				</a>
-			</li>
-			<li>
-				<a
-					aria-current={segment === "graph"
-						? "page"
-						: undefined}
-					href="{$page.path
-						.replace('/graph', '')
-						.replace('/laps_lead', '')
-						.replace('/fastest_lap', '')}/graph"
-				>
-					Graph
-				</a>
-			</li>
-		{:else}
+		{#if segment === undefined || !segment.match(regex)}
 			<li>
 				<Seasons />
 			</li>
@@ -103,6 +56,60 @@
 						: undefined}
 					href="driver_standings">Driver Standings</a
 				>
+			</li>
+		{:else}
+			<li>
+				<a href="/"> <i class="fas fa-arrow-left" /></a>
+			</li>
+			<li>
+				<a
+					aria-current={$page.path.includes("qualy")
+						? "qualy"
+						: undefined}
+					href="{path}/qualy"
+				>
+					Qualy</a
+				>
+			</li>
+			<li>
+				<a
+					aria-current={$page.path.includes("result")
+						? "result"
+						: undefined}
+					href="{path}/result"
+				>
+					Position
+				</a>
+			</li>
+			<li>
+				<a
+					aria-current={$page.path.includes("laps_lead")
+						? "laps_lead"
+						: undefined}
+					href="{path}/laps_lead"
+				>
+					Laps lead
+				</a>
+			</li>
+			<li>
+				<a
+					aria-current={$page.path.includes("fastest_lap")
+						? "fastest_lap"
+						: undefined}
+					href="{path}/fastest_lap"
+				>
+					Fastest laps
+				</a>
+			</li>
+			<li>
+				<a
+					aria-current={$page.path.includes("graph")
+						? "graph"
+						: undefined}
+					href="{path}/graph"
+				>
+					Graph
+				</a>
 			</li>
 		{/if}
 	</ul>

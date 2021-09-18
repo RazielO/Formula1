@@ -63,12 +63,7 @@
                         </div>
                     </td>
                     <td>
-                        <a href="/qualy/{$seasonSelected}_{race.round}">Qualy</a
-                        >
-                    </td>
-                    <td>
-                        <a href="/result/{$seasonSelected}_{race.round}"
-                            >Result</a
+                        <a href="/{$seasonSelected}_{race.round}/qualy">Info</a
                         >
                     </td>
                 </tr>

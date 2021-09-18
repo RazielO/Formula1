@@ -1,6 +1,10 @@
 <script context="module">
     export function preload({ params }) {
-        const data = { season: params.season, round: params.round - 1 };
+        const data = {
+            season: params.season,
+            round: params.round - 1,
+            roundApi: params.round,
+        };
 
         return { data };
     }
@@ -13,14 +17,17 @@
     import { goto } from "@sapper/app";
     import { onMount } from "svelte";
 
-    import Loader from "../../../components/Loader.svelte";
+    import Loader from "../../components/Loader.svelte";
 
-    import { rounds, drivers } from "../../../stores.js";
+    import { rounds, drivers } from "../../stores.js";
+    import * as consumer from "../../api_consumer/consumer.js";
+    import { GraphData } from "../../api_consumer/types/GraphData.js";
 
     export let data;
 
     let season = data.season;
     let round = data.round;
+    let roundApi = data.roundApi;
 
     let minLap;
     let prevMin;
@@ -29,40 +36,28 @@
     let chart;
 
     const getLaps = async () => {
-        let lapsUrl = `https://ergast.com/api/f1/${season}/${
-            round + 1
-        }/laps.json?limit=10000`;
-
         if ($rounds[season] === undefined) {
             goto("/");
         } else if ($rounds[season][round] === undefined) {
             goto("/");
         } else {
-            if (!Object.keys($rounds[season][round]).includes("laps")) {
-                let response = await fetch(lapsUrl).then((data) => data.json());
-
-                if (response.MRData.RaceTable.Races.length > 0) {
-                    let laps = response.MRData.RaceTable.Races[0].Laps;
-                    let lapsParsed = laps.map((lap) =>
-                        lap.Timings.map((time) => {
-                            return {
-                                name: $drivers[time.driverId].name,
-                                code: $drivers[time.driverId].code,
-                                color: $drivers[time.driverId].color,
-                            };
-                        })
-                    );
-
-                    rounds.update((val) => {
-                        val[season][round].laps = lapsParsed;
-                        return val;
-                    });
-                } else {
-                    rounds.update((val) => {
-                        val[season][round].laps = [];
-                        return val;
+            let driversData = await consumer.getDrivers(season);
+            Object.keys(driversData).map((driver) => {
+                if ($drivers[driver] === undefined) {
+                    drivers.update((value) => {
+                        value[driver] = driversData[driver];
+                        return value;
                     });
                 }
+            });
+
+            if (!Object.keys($rounds[season][round]).includes("laps")) {
+                let result = await consumer.getLaps(season, roundApi, $drivers);
+
+                rounds.update((value) => {
+                    value[season][round].laps = result;
+                    return value;
+                });
             }
         }
     };
@@ -95,14 +90,11 @@
 
         return Object.keys(groups).map((d) => {
             let color = driverCodes.filter((a) => a.code === d)[0].color;
-            return {
-                label: d,
-                data: groups[d].filter(
-                    (_, i) => i >= minLap - 1 && i <= maxLap - 1
-                ),
-                backgroundColor: color,
-                borderColor: color,
-            };
+            let data = groups[d].filter(
+                (_, i) => i >= minLap - 1 && i <= maxLap - 1
+            );
+
+            return new GraphData(d, data, color);
         });
     };
 
@@ -158,6 +150,15 @@
     };
 
     onMount(async () => {
+        if (!Object.keys($rounds[season][round]).includes("result")) {
+            let result = await consumer.getResult(season, roundApi);
+
+            rounds.update((value) => {
+                value[season][round].result = result;
+                return value;
+            });
+        }
+
         await getLaps();
 
         if (minLap === undefined) {

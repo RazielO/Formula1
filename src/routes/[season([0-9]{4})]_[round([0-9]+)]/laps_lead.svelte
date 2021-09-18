@@ -1,24 +1,33 @@
 <script context="module">
     export function preload({ params }) {
-        const data = { season: params.season, round: params.round - 1 };
+        const data = {
+            season: params.season,
+            round: params.round - 1,
+            roundApi: params.round,
+        };
 
         return { data };
     }
 </script>
 
 <script>
-    import Loader from "../../../components/Loader.svelte";
+    import Loader from "../../components/Loader.svelte";
 
     import { goto } from "@sapper/app";
     import { onMount } from "svelte";
 
-    import { rounds, drivers } from "../../../stores.js";
+    import { rounds, drivers } from "../../stores.js";
+    import * as consumer from "../../api_consumer/consumer.js";
+
+    import { LapsLead } from "../../api_consumer/types/LapsLead.js";
 
     export let data;
-    let size = 20;
 
     let season = data.season;
     let round = data.round;
+    let roundApi = data.roundApi;
+
+    let size = 20;
 
     const groupLead = (laps) => {
         let result = [];
@@ -30,15 +39,10 @@
             if (previous === laps[i]) {
                 count += 1;
             } else {
-                result.push({
-                    start: start,
-                    end: i,
-                    driver: previous,
-                    count: count,
-                    color: Object.values($drivers).filter(
-                        (d) => d.name === previous
-                    )[0].color,
-                });
+                let color = Object.values($drivers).filter(
+                    (d) => d.name === previous
+                )[0].color;
+                result.push(new LapsLead(start, i, previous, count, color));
                 start = i;
                 previous = laps[i];
                 count = 1;
@@ -46,61 +50,46 @@
         }
 
         if (count !== 0) {
-            result.push({
-                start: start,
-                end: laps.length,
-                driver: previous,
-                count: count,
-                color: Object.values($drivers).filter(
-                    (d) => d.name === previous
-                )[0].color,
-            });
+            let color = Object.values($drivers).filter(
+                (d) => d.name === previous
+            )[0].color;
+            result.push(
+                new LapsLead(start, laps.length, previous, count, color)
+            );
         }
 
         return result;
     };
 
     const getLaps = async () => {
-        let lapsUrl = `https://ergast.com/api/f1/${season}/${
-            round + 1
-        }/laps.json?limit=10000`;
-
         if ($rounds[season] === undefined) {
             goto("/");
         } else if ($rounds[season][round] === undefined) {
             goto("/");
         } else {
-            if (!Object.keys($rounds[season][round]).includes("laps")) {
-                let response = await fetch(lapsUrl).then((data) => data.json());
-
-                if (response.MRData.RaceTable.Races.length > 0) {
-                    let laps = response.MRData.RaceTable.Races[0].Laps;
-                    let lapsParsed = laps.map((lap) =>
-                        lap.Timings.map((time) => {
-                            return {
-                                name: $drivers[time.driverId].name,
-                                code: $drivers[time.driverId].code,
-                                color: $drivers[time.driverId].color,
-                            };
-                        })
-                    );
-
-                    rounds.update((val) => {
-                        val[season][round].laps = lapsParsed;
-                        return val;
-                    });
-                } else {
-                    rounds.update((val) => {
-                        val[season][round].laps = [];
-                        return val;
+            let driversData = await consumer.getDrivers(season);
+            Object.keys(driversData).map((driver) => {
+                if ($drivers[driver] === undefined) {
+                    drivers.update((value) => {
+                        value[driver] = driversData[driver];
+                        return value;
                     });
                 }
+            });
+
+            if (!Object.keys($rounds[season][round]).includes("laps")) {
+                let result = await consumer.getLaps(season, roundApi, $drivers);
+
+                rounds.update((value) => {
+                    value[season][round].laps = result;
+                    return value;
+                });
             }
         }
     };
 
     onMount(() => {
-        getLaps();
+        rounds.subscribe(() => getLaps());
     });
 </script>
 
