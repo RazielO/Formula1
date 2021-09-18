@@ -7,7 +7,7 @@
 </script>
 
 <script>
-    import Loader from '../../components/Loader.svelte'
+    import Loader from "../../components/Loader.svelte";
 
     import { goto } from "@sapper/app";
     import { onMount } from "svelte";
@@ -63,14 +63,17 @@
         }
     };
 
-    onMount(() => rounds.subscribe(() => getQualy()));
+    onMount(() => {
+        round = round - 1;
+        rounds.subscribe(() => getQualy());
+    });
 </script>
 
 {#if $rounds[season] !== undefined}
     {#if $rounds[season][round].qualy !== undefined && $rounds[season][round].qualy.length === 0}
         <h1>Sorry! There is no information for this race</h1>
     {:else if $rounds[season][round].qualy !== undefined}
-        <h1>{season} {$rounds[season][round - 1].name}</h1>
+        <h1>{season} {$rounds[season][round].name}</h1>
         <h2>Qualifying Results</h2>
 
         <table>
