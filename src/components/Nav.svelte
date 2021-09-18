@@ -31,6 +31,7 @@
 				<a
 					aria-current={segment === "results" ? "page" : undefined}
 					href={$page.path
+						.replace("/graph", "")
 						.replace("/laps_lead", "")
 						.replace("/fastest_lap", "")}
 				>
@@ -41,20 +42,37 @@
 				<a
 					aria-current={segment === "laps_lead" ? "page" : undefined}
 					href="{$page.path
-						.replace("/laps_lead", "")
-						.replace("/fastest_lap", "")}/laps_lead"
+						.replace('/graph', '')
+						.replace('/laps_lead', '')
+						.replace('/fastest_lap', '')}/laps_lead"
 				>
 					Laps lead
 				</a>
 			</li>
 			<li>
 				<a
-					aria-current={segment === "fastest_lap" ? "page" : undefined}
+					aria-current={segment === "fastest_lap"
+						? "page"
+						: undefined}
 					href="{$page.path
-						.replace("/laps_lead", "")
-						.replace("/fastest_lap", "")}/fastest_lap"
+						.replace('/graph', '')
+						.replace('/laps_lead', '')
+						.replace('/fastest_lap', '')}/fastest_lap"
 				>
 					Fastest laps
+				</a>
+			</li>
+			<li>
+				<a
+					aria-current={segment === "graph"
+						? "page"
+						: undefined}
+					href="{$page.path
+						.replace('/graph', '')
+						.replace('/laps_lead', '')
+						.replace('/fastest_lap', '')}/graph"
+				>
+					Graph
 				</a>
 			</li>
 		{:else}
