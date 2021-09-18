@@ -13,7 +13,8 @@
     "compression": "^1.7.1",
     "express": "^4.17.1",
     "sirv": "^1.0.0",
-    "svelte-canvas": "^0.6.1"
+    "svelte-canvas": "^0.6.1",
+    "wtf_wikipedia": "^9.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
