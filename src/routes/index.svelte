@@ -37,7 +37,7 @@
 </script>
 
 <svelte:head
-    ><title>{$seasonSelected} Formula One World Championship</title
+    ><title>Formula One Data</title
     ></svelte:head
 >
 
@@ -64,11 +64,11 @@
                             <span class="tooltiptext">{race.location}</span>
                         </div>
                     </td>
-                    <!-- <td>
-                        <button on:click={() => goToQualy(race.round)}
-                            >Qualy</button
+                    <td>
+                        <a href="/qualy/{$seasonSelected}_{race.round}">Qualy</a
                         >
                     </td>
+                    <!--
                     <td>
                         <button on:click={() => goToRace(race.round)}
                             >Result</button
