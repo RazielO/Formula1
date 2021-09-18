@@ -9,8 +9,9 @@
         let url = `https://ergast.com/api/f1/${$seasonSelected}.json`;
 
         if (
-            $rounds[$seasonSelected] === undefined ||
-            $rounds[$seasonSelected].length === 0
+            $seasonSelected !== undefined &&
+            ($rounds[$seasonSelected] === undefined ||
+                $rounds[$seasonSelected].length === 0)
         ) {
             let response = await fetch(url).then((data) => data.json());
             rounds.update((val) => {
@@ -36,10 +37,7 @@
     });
 </script>
 
-<svelte:head
-    ><title>Formula One Data</title
-    ></svelte:head
->
+<svelte:head><title>Formula One Data</title></svelte:head>
 
 {#if $seasonSelected !== undefined && $rounds[$seasonSelected] !== undefined}
     <h1>{$seasonSelected} Formula One World Championship</h1>
@@ -69,7 +67,8 @@
                         >
                     </td>
                     <td>
-                        <a href="/result/{$seasonSelected}_{race.round}">Result</a
+                        <a href="/result/{$seasonSelected}_{race.round}"
+                            >Result</a
                         >
                     </td>
                 </tr>
