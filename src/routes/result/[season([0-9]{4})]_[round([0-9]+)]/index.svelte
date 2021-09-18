@@ -7,12 +7,12 @@
 </script>
 
 <script>
-    import Loader from "../../components/Loader.svelte";
+    import Loader from "../../../components/Loader.svelte";
 
     import { goto } from "@sapper/app";
     import { onMount } from "svelte";
 
-    import { rounds, nationalities, drivers } from "../../stores.js";
+    import { rounds, nationalities, drivers } from "../../../stores.js";
 
     export let data;
 
@@ -62,6 +62,24 @@
         });
     };
 
+    const getFastestLap = (results) => {
+        let filtered = results.filter((race) => race.FastestLap);
+
+        if (filtered.length !== 0) {
+            let fastest = filtered.filter(
+                (race) => race.FastestLap.rank === "1"
+            )[0];
+
+            return {
+                driver: `${fastest.Driver.givenName} ${fastest.Driver.familyName}`,
+                time: fastest.FastestLap.Time.time,
+                lap: fastest.FastestLap.lap,
+            };
+        } else {
+            return null;
+        }
+    };
+
     const getResult = async () => {
         if ($rounds[season] === undefined) {
             goto("/");
@@ -77,6 +95,7 @@
                     rounds.update((val) => {
                         val[season][round].result = {
                             drivers: getDrivers(results),
+                            fastestLap: getFastestLap(results),
                         };
                         return val;
                     });
