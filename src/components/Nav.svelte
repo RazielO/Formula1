@@ -63,6 +63,16 @@
 			</li>
 			<li>
 				<a
+					aria-current={$page.path.includes("background")
+						? "background"
+						: undefined}
+					href="{path}/background"
+				>
+					Background</a
+				>
+			</li>
+			<li>
+				<a
 					aria-current={$page.path.includes("qualy")
 						? "qualy"
 						: undefined}
