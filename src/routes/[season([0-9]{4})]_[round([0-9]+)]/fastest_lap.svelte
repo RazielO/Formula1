@@ -1,6 +1,10 @@
 <script context="module">
     export function preload({ params }) {
-        const data = { season: params.season, round: params.round - 1 };
+        const data = {
+            season: params.season,
+            round: params.round - 1,
+            roundApi: params.round,
+        };
 
         return { data };
     }
@@ -27,7 +31,7 @@
             goto("/");
         } else {
             if (!Object.keys($rounds[season][round]).includes("result")) {
-                let result = await consumer.getResult(season, round);
+                let result = await consumer.getResult(season, roundApi);
 
                 rounds.update((value) => {
                     value[season][round].result = result;
