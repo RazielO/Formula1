@@ -22,6 +22,12 @@
     let season = data.season;
     let round = data.round;
 
+    let minLap;
+    let prevMin;
+    let maxLap;
+    let prevMax;
+    let chart;
+
     const getLaps = async () => {
         let lapsUrl = `https://ergast.com/api/f1/${season}/${
             round + 1
@@ -91,7 +97,9 @@
             let color = driverCodes.filter((a) => a.code === d)[0].color;
             return {
                 label: d,
-                data: groups[d],
+                data: groups[d].filter(
+                    (_, i) => i >= minLap - 1 && i <= maxLap - 1
+                ),
                 backgroundColor: color,
                 borderColor: color,
             };
@@ -99,7 +107,32 @@
     };
 
     $: render = ({ context, width, height }) => {
-        new Chart(context, {
+        if (prevMax !== maxLap || prevMin !== minLap) {
+            if (maxLap >= minLap) {
+                chart.data = {
+                    labels: new Array(maxLap - minLap + 1)
+                        .fill(0)
+                        .map((_, i) => i + minLap),
+                    datasets: parseLaps($rounds[season][round].laps),
+                };
+
+                chart.update();
+            }
+        }
+
+        prevMax = maxLap;
+        prevMin = minLap;
+    };
+
+    const setup = ({ context, width, height }) => {
+        if (minLap === undefined) {
+            minLap = 1;
+        }
+        if (maxLap === undefined && $rounds[season] !== undefined) {
+            maxLap = $rounds[season][round].laps.length;
+        }
+
+        chart = new Chart(context, {
             type: "line",
             data: {
                 labels: new Array($rounds[season][round].laps.length)
@@ -117,28 +150,50 @@
                         reverse: true,
                         min: 1,
                         max: $rounds[season][round].result.drivers.length,
+                        offset: true,
                     },
                 },
             },
         });
     };
 
-    onMount(() => {
-        getLaps();
+    onMount(async () => {
+        await getLaps();
+
+        if (minLap === undefined) {
+            minLap = 1;
+        }
+        if (maxLap === undefined && $rounds[season] !== undefined) {
+            maxLap = $rounds[season][round].laps.length;
+        }
     });
 </script>
 
 {#if $rounds[season] !== undefined}
     {#if $rounds[season][round] !== undefined}
         {#if $rounds[season][round].laps !== undefined}
-            <!-- <pre>{JSON.stringify($rounds[season][round].laps, null, 2)}</pre> -->
-            <!-- <pre>{JSON.stringify(parseLaps($rounds[season][round].laps), null, 2)}</pre> -->
             <h1>{season} {$rounds[season][round].name}</h1>
             <h2>Positions during the race</h2>
             <h3>Click on any label to hide that driver</h3>
 
+            <p>
+                Show laps from <input
+                    type="number"
+                    bind:value={minLap}
+                    min="1"
+                    max={$rounds[season][round].laps.length}
+                />
+                to
+                <input
+                    type="number"
+                    bind:value={maxLap}
+                    min="1"
+                    max={$rounds[season][round].laps.length}
+                />
+            </p>
+
             <Canvas width={640} height={300}>
-                <Layer {render} />
+                <Layer {setup} {render} />
             </Canvas>
         {:else}
             <Loader />
