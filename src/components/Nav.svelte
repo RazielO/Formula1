@@ -1,6 +1,9 @@
 <script>
 	import Seasons from "./Seasons.svelte";
 
+	import { stores } from "@sapper/app";
+	const { page } = stores();
+
 	export let segment;
 </script>
 
@@ -23,6 +26,22 @@
 				>
 					<i class="fas fa-arrow-left" /></a
 				>
+			</li>
+			<li>
+				<a
+					aria-current={segment === "laps_lead" ? "page" : undefined}
+					href={$page.path.replace("/laps_lead", "")}
+				>
+					Position
+				</a>
+			</li>
+			<li>
+				<a
+					aria-current={segment === "laps_lead" ? "page" : undefined}
+					href="{$page.path}/laps_lead"
+				>
+					Laps lead
+				</a>
 			</li>
 		{:else}
 			<li>
