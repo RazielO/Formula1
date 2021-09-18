@@ -13,7 +13,13 @@
 		<li>
 			<a
 				aria-current={segment === undefined ? "page" : undefined}
-				href=".">home</a
+				href=".">Races</a
+			>
+		</li>
+		<li>
+			<a
+				aria-current={segment === "constructor_standings" ? "page" : undefined}
+				href="constructor_standings">Constructor Standings</a
 			>
 		</li>
 		<li>
