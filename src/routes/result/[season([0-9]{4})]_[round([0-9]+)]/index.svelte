@@ -160,28 +160,7 @@
                             </div>
                         </td>
                         <td>{driver.constructor}</td>
-                        <td>
-                            <div class="tooltip">
-                                {driver.status}
-                                <div class="tooltiptext">
-                                    {#if driver.time !== ""}
-                                        <p><b>Time: </b>{driver.time}</p>
-                                    {/if}
-                                    {#if driver.averageSpeed !== ""}
-                                        <p>
-                                            <b>Avg. Speed:</b>
-                                            {driver.averageSpeed}
-                                        </p>
-                                    {/if}
-                                    {#if driver.fastestLap}
-                                        <p>
-                                            <b>Fastest Lap:</b>
-                                            {driver.fastestLap}
-                                        </p>
-                                    {/if}
-                                </div>
-                            </div>
-                        </td>
+                        <td>{driver.status}</td>
                         <td>{driver.points}</td>
                     </tr>
                 {/each}
