@@ -80,6 +80,7 @@
                             return {
                                 name: $drivers[time.driverId].name,
                                 code: $drivers[time.driverId].code,
+                                color: $drivers[time.driverId].color,
                             };
                         })
                     );
