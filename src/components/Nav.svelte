@@ -6,11 +6,29 @@
 
 <nav>
 	<ul>
-		{#if segment !== "qualy"}
+		{#if segment === "qualy"}
+			<li>
+				<a
+					aria-current={segment === undefined ? "page" : undefined}
+					href="/"
+				>
+					<i class="fas fa-arrow-left" /></a
+				>
+			</li>
+		{:else if segment === "result"}
+			<li>
+				<a
+					aria-current={segment === undefined ? "page" : undefined}
+					href="/"
+				>
+					<i class="fas fa-arrow-left" /></a
+				>
+			</li>
+		{:else}
 			<li>
 				<Seasons />
 			</li>
-			
+
 			<li>
 				<a
 					aria-current={segment === undefined ? "page" : undefined}
@@ -33,15 +51,6 @@
 						? "page"
 						: undefined}
 					href="driver_standings">Driver Standings</a
-				>
-			</li>
-		{:else}
-			<li>
-				<a
-					aria-current={segment === undefined ? "page" : undefined}
-					href="/"
-				>
-					<i class="fas fa-arrow-left" /></a
 				>
 			</li>
 		{/if}

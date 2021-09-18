@@ -68,12 +68,10 @@
                         <a href="/qualy/{$seasonSelected}_{race.round}">Qualy</a
                         >
                     </td>
-                    <!--
                     <td>
-                        <button on:click={() => goToRace(race.round)}
-                            >Result</button
+                        <a href="/result/{$seasonSelected}_{race.round}">Result</a
                         >
-                    </td> -->
+                    </td>
                 </tr>
             {/each}
         </tbody>
