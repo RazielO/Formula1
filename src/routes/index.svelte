@@ -4,28 +4,19 @@
     import Loader from "../components/Loader.svelte";
 
     import { rounds, seasonSelected } from "../stores.js";
+    import * as consumer from "../api_consumer/consumer.js";
 
     const getRounds = async () => {
-        let url = `https://ergast.com/api/f1/${$seasonSelected}.json`;
-
         if (
             $seasonSelected !== undefined &&
             ($rounds[$seasonSelected] === undefined ||
                 $rounds[$seasonSelected].length === 0)
         ) {
-            let response = await fetch(url).then((data) => data.json());
-            rounds.update((val) => {
-                val[$seasonSelected] = response.MRData.RaceTable.Races.map(
-                    (race) => {
-                        return {
-                            round: race.round,
-                            name: race.raceName,
-                            circuit: race.Circuit.circuitName,
-                            location: `${race.Circuit.Location.locality}, ${race.Circuit.Location.country}`,
-                        };
-                    }
-                );
-                return val;
+            let result = await consumer.getRounds($seasonSelected);
+
+            rounds.update((value) => {
+                value[$seasonSelected] = result;
+                return value;
             });
         }
     };
@@ -63,7 +54,8 @@
                         </div>
                     </td>
                     <td>
-                        <a href="/{$seasonSelected}_{race.round}/background">Info</a
+                        <a href="/{$seasonSelected}_{race.round}/background"
+                            >Info</a
                         >
                     </td>
                 </tr>
