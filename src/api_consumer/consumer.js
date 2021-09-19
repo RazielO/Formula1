@@ -13,3 +13,5 @@ export const getDrivers = async (season) => await drivers.getDrivers(season)
 export const getLaps = async (season, round, drivers) => await laps.getLaps(season, round, drivers)
 
 export const getSeasonDriverStandings = async (season) => standings.getSeasonDriverStandings(season)
+
+export const getSeasonConstructorStandings = async (season) => standings.getSeasonConstructorStandings(season)

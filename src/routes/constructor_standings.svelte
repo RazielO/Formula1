@@ -1,50 +1,25 @@
 <script>
     import { onMount } from "svelte";
+    import { goto } from "@sapper/app";
 
     import Loader from "../components/Loader.svelte";
 
     import { rounds, seasonSelected } from "../stores.js";
 
-    const createStandings = (data) => {
-        return data.map((constructor) => {
-            return {
-                position: constructor.position,
-                points: constructor.points,
-                wins: constructor.wins,
-                name: constructor.Constructor.name,
-                nationality: constructor.Constructor.nationality,
-                status: constructor.positionText,
-            };
-        });
-    };
+    import * as consumer from "../api_consumer/consumer.js";
 
     const getStandings = async () => {
-        let url = `https://ergast.com/api/f1/${$seasonSelected}/constructorStandings.json`;
-
         if ($rounds[$seasonSelected] === undefined) {
-            rounds.update((val) => {
-                val[$seasonSelected] = [];
-                return val;
-            });
-        }
+            goto("/");
+        } else {
+            if ($rounds[$seasonSelected].constructorStandings === undefined) {
+                let result = await consumer.getSeasonConstructorStandings(
+                    $seasonSelected
+                );
 
-        if ($rounds[$seasonSelected].constructorStandings === undefined) {
-            let response = await fetch(url).then((data) => data.json());
-
-            if (response.MRData.StandingsTable.StandingsLists.length !== 0) {
-                let data =
-                    response.MRData.StandingsTable.StandingsLists[0]
-                        .ConstructorStandings;
-
-                rounds.update((val) => {
-                    val[$seasonSelected].constructorStandings =
-                        createStandings(data);
-                    return val;
-                });
-            } else {
-                rounds.update((val) => {
-                    val[$seasonSelected].constructorStandings = [];
-                    return val;
+                rounds.update((value) => {
+                    value[$seasonSelected].constructorStandings = result;
+                    return value;
                 });
             }
         }
