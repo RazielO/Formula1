@@ -7,7 +7,9 @@
 	const { page } = stores();
 
 	const regex = /(\d{4})_(\d+)/g;
+
 	let path;
+	let showingMenu = false;
 
 	const createPath = () => {
 		let parts = regex.exec(segment);
@@ -29,98 +31,130 @@
 <nav>
 	<ul>
 		{#if segment === undefined || !segment.match(regex)}
-			<li>
-				<Seasons />
-			</li>
+			<div class="top">
+				<li>
+					<Seasons />
+				</li>
 
-			<li>
-				<a
-					aria-current={segment === undefined ? "page" : undefined}
-					href=".">Races</a
+				<button
+					class="menu-btn"
+					on:click={() => (showingMenu = !showingMenu)}
+					><i class="fas fa-bars" /></button
 				>
-			</li>
+			</div>
 
-			<li>
-				<a
-					aria-current={segment === "constructor_standings"
-						? "page"
-						: undefined}
-					href="constructor_standings">Constructor Standings</a
-				>
-			</li>
+			<div class="menu" style="display: {showingMenu ? 'flex' : 'none'};">
+				<li>
+					<a
+						aria-current={segment === undefined
+							? "page"
+							: undefined}
+						on:click={() => (showingMenu = false)}
+						href=".">Races</a
+					>
+				</li>
 
-			<li>
-				<a
-					aria-current={segment === "driver_standings"
-						? "page"
-						: undefined}
-					href="driver_standings">Driver Standings</a
-				>
-			</li>
+				<li>
+					<a
+						aria-current={segment === "constructor_standings"
+							? "page"
+							: undefined}
+						on:click={() => (showingMenu = false)}
+						href="constructor_standings">Constructor Standings</a
+					>
+				</li>
+
+				<li>
+					<a
+						aria-current={segment === "driver_standings"
+							? "page"
+							: undefined}
+						on:click={() => (showingMenu = false)}
+						href="driver_standings">Driver Standings</a
+					>
+				</li>
+			</div>
 		{:else}
-			<li>
-				<a href="/"> <i class="fas fa-arrow-left" /></a>
-			</li>
-			<li>
-				<a
-					aria-current={$page.path.includes("background")
-						? "background"
-						: undefined}
-					href="{path}/background"
+			<div class="top">
+				<li>
+					<a href="/"> <i class="fas fa-arrow-left" /></a>
+				</li>
+
+				<button
+					class="menu-btn"
+					on:click={() => (showingMenu = !showingMenu)}
+					><i class="fas fa-bars" /></button
 				>
-					Background</a
-				>
-			</li>
-			<li>
-				<a
-					aria-current={$page.path.includes("qualy")
-						? "qualy"
-						: undefined}
-					href="{path}/qualy"
-				>
-					Qualy</a
-				>
-			</li>
-			<li>
-				<a
-					aria-current={$page.path.includes("result")
-						? "result"
-						: undefined}
-					href="{path}/result"
-				>
-					Position
-				</a>
-			</li>
-			<li>
-				<a
-					aria-current={$page.path.includes("laps_lead")
-						? "laps_lead"
-						: undefined}
-					href="{path}/laps_lead"
-				>
-					Laps lead
-				</a>
-			</li>
-			<li>
-				<a
-					aria-current={$page.path.includes("fastest_lap")
-						? "fastest_lap"
-						: undefined}
-					href="{path}/fastest_lap"
-				>
-					Fastest laps
-				</a>
-			</li>
-			<li>
-				<a
-					aria-current={$page.path.includes("graph")
-						? "graph"
-						: undefined}
-					href="{path}/graph"
-				>
-					Graph
-				</a>
-			</li>
+			</div>
+
+			<div class="menu" style="display: {showingMenu ? 'flex' : 'none'};">
+				<li>
+					<a
+						aria-current={$page.path.includes("background")
+							? "background"
+							: undefined}
+						on:click={() => (showingMenu = false)}
+						href="{path}/background"
+					>
+						Background</a
+					>
+				</li>
+				<li>
+					<a
+						aria-current={$page.path.includes("qualy")
+							? "qualy"
+							: undefined}
+						on:click={() => (showingMenu = false)}
+						href="{path}/qualy"
+					>
+						Qualy</a
+					>
+				</li>
+				<li>
+					<a
+						aria-current={$page.path.includes("result")
+							? "result"
+							: undefined}
+						on:click={() => (showingMenu = false)}
+						href="{path}/result"
+					>
+						Position
+					</a>
+				</li>
+				<li>
+					<a
+						aria-current={$page.path.includes("laps_lead")
+							? "laps_lead"
+							: undefined}
+						on:click={() => (showingMenu = false)}
+						href="{path}/laps_lead"
+					>
+						Laps lead
+					</a>
+				</li>
+				<li>
+					<a
+						aria-current={$page.path.includes("fastest_lap")
+							? "fastest_lap"
+							: undefined}
+						on:click={() => (showingMenu = false)}
+						href="{path}/fastest_lap"
+					>
+						Fastest laps
+					</a>
+				</li>
+				<li>
+					<a
+						aria-current={$page.path.includes("graph")
+							? "graph"
+							: undefined}
+						on:click={() => (showingMenu = false)}
+						href="{path}/graph"
+					>
+						Graph
+					</a>
+				</li>
+			</div>
 		{/if}
 	</ul>
 </nav>
@@ -168,5 +202,29 @@
 		text-decoration: none;
 		padding: 1em 0.5em;
 		display: block;
+	}
+
+	@media only screen and (min-width: 768px) {
+		.menu {
+			display: unset !important;
+		}
+	}
+
+	@media only screen and (max-width: 768px) {
+		.menu-btn {
+			background: none;
+			border: none;
+			font-size: 1.25rem;
+		}
+
+		.top {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.menu {
+			flex-direction: column;
+		}
 	}
 </style>
