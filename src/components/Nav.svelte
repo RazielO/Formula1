@@ -208,6 +208,10 @@
 		.menu {
 			display: unset !important;
 		}
+
+		.menu-btn {
+			display: none
+		}
 	}
 
 	@media only screen and (max-width: 768px) {
