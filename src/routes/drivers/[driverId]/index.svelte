@@ -50,6 +50,8 @@
                 value[driverId].info = driver;
                 return value;
             });
+        } else {
+            driver = $drivers[driverId].info
         }
     };
 

@@ -3,10 +3,11 @@
 
     import { goto } from "@sapper/app";
 
-    import { rounds, seasonSelected } from "../stores.js";
+    import { rounds, seasonSelected, drivers } from "../stores.js";
 
     import * as consumer from "../api_consumer/consumer.js";
     import { onMount } from "svelte";
+    import { getDriver } from "../api_consumer/consumer/drivers";
 
     const getStandings = async () => {
         if ($rounds[$seasonSelected] === undefined) {
@@ -25,7 +26,23 @@
         }
     };
 
-    onMount(() => {
+    const findDriver = (name) => {
+        return Object.keys($drivers).filter(
+            (k) => $drivers[k].name === name
+        )[0];
+    };
+
+    onMount(async () => {
+        let driversData = await consumer.getDrivers($seasonSelected);
+        Object.keys(driversData).map((driver) => {
+            if ($drivers[driver] === undefined) {
+                drivers.update((value) => {
+                    value[driver] = driversData[driver];
+                    return value;
+                });
+            }
+        });
+
         seasonSelected.subscribe(() => getStandings());
     });
 </script>
@@ -56,7 +73,11 @@
                     {:else}
                         <td>{driver.position}</td>
                     {/if}
-                    <td>{driver.name}</td>
+                    <td
+                        ><a href="/drivers/{findDriver(driver.name)}"
+                            >{driver.name}</a
+                        ></td
+                    >
                     <td>{driver.constructor}</td>
                     <td>{driver.points}</td>
                     <td>{driver.wins}</td>

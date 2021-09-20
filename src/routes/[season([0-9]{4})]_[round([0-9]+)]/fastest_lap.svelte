@@ -17,12 +17,13 @@
     import Loader from "../../components/Loader.svelte";
 
     import { rounds, nationalities } from "../../stores.js";
-    import * as consumer from "../../api_consumer/consumer/result.js";
+    import * as consumer from "../../api_consumer/consumer.js";
 
     export let data;
 
     let season = data.season;
     let round = data.round;
+    let roundApi = data.roundApi;
 
     const getResult = async () => {
         if ($rounds[season] === undefined) {
@@ -60,7 +61,14 @@
 
                 <p><b>{$rounds[season][round].result.fastestLap.time}</b></p>
                 <p>
-                    <b>{$rounds[season][round].result.fastestLap.driver}</b>
+                    <b
+                        ><a
+                            href="/drivers/{$rounds[season][round].result
+                                .fastestLap.driverId}"
+                            >{$rounds[season][round].result.fastestLap
+                                .driver}</a
+                        ></b
+                    >
                     (Lap {$rounds[season][round].result.fastestLap.lap})
                 </p>
             {/if}
@@ -79,22 +87,9 @@
                         {#if driver.fastestLap}
                             <tr>
                                 <td>
-                                    <div class="tooltip">
-                                        {driver.driver}
-                                        <div class="tooltiptext">
-                                            <p><b>Number:</b></p>
-                                            <p>{driver.number}</p>
-                                            <p>
-                                                <b>Nationality: </b>
-                                                <img
-                                                    src="https://www.countryflags.io/{$nationalities[
-                                                        driver.nationality.toLowerCase()
-                                                    ]}/flat/32.png"
-                                                    alt={driver.nationality}
-                                                />
-                                            </p>
-                                        </div>
-                                    </div>
+                                    <a href="/drivers/{driver.driverId}"
+                                        >{driver.driver}</a
+                                    >
                                 </td>
                                 <td>{driver.constructor}</td>
                                 <td>{driver.fastestLap}</td>

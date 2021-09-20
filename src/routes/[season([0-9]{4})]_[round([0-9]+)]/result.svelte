@@ -70,24 +70,11 @@
                     <tr>
                         <td>{driver.position}</td>
                         <td>{driver.started}</td>
-                        <td>
-                            <div class="tooltip">
-                                {driver.driver}
-                                <div class="tooltiptext">
-                                    <p><b>Number:</b></p>
-                                    <p>{driver.number}</p>
-                                    <p>
-                                        <b>Nationality: </b>
-                                        <img
-                                            src="https://www.countryflags.io/{$nationalities[
-                                                driver.nationality.toLowerCase()
-                                            ]}/flat/32.png"
-                                            alt={driver.nationality}
-                                        />
-                                    </p>
-                                </div>
-                            </div>
-                        </td>
+                        <td
+                            ><a href="/drivers/{driver.driverId}"
+                                >{driver.driver}</a
+                            ></td
+                        >
                         <td>{driver.constructor}</td>
                         <td>{driver.status}</td>
                         <td>{driver.points}</td>

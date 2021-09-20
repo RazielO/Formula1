@@ -154,7 +154,7 @@
 						on:click={() => (showingMenu = false)}
 						href="{path}/result"
 					>
-						Position
+						Result
 					</a>
 				</li>
 				<li>

@@ -1,5 +1,6 @@
 export class DriverQualy {
     constructor(data) {
+        this.driverId = data.Driver.driverId;
         this.driver = `${data.Driver.givenName} ${data.Driver.familyName}`;
         this.number = data.number;
         this.position = data.position;
