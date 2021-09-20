@@ -6,31 +6,30 @@
 	import { stores } from "@sapper/app";
 	const { page } = stores();
 
-	const regex = /(\d{4})_(\d+)/g;
+	const yearRound = /(\d{4})_(\d+)/g;
+	const driver = /drivers\/([a-z_]+)/g;
 
 	let path;
 	let showingMenu = false;
 
-	const createPath = () => {
-		let parts = regex.exec(segment);
-
-		if (parts !== null) {
-			return `${parts[1]}_${parts[2]}`;
-		} else {
-			return "";
-		}
-	};
-
 	$: {
-		if (segment !== undefined && segment.match(regex)) {
-			path = createPath();
+		if (segment !== undefined) {
+			if (segment.match(yearRound)) {
+				let parts = yearRound.exec(segment);
+
+				path = parts !== null ? `${parts[1]}_${parts[2]}` : "";
+			} else if ($page.path.match(driver)) {
+				let parts = driver.exec($page.path);
+
+				path = parts !== null ? parts[1] : "";
+			}
 		}
 	}
 </script>
 
 <nav>
 	<ul>
-		{#if segment === undefined || !segment.match(regex)}
+		{#if segment === undefined || (!segment.match(yearRound) && segment !== "drivers")}
 			<div class="top">
 				<li>
 					<Seasons />
@@ -71,6 +70,43 @@
 							: undefined}
 						on:click={() => (showingMenu = false)}
 						href="driver_standings">Driver Standings</a
+					>
+				</li>
+			</div>
+		{:else if segment === "drivers"}
+			<div class="top">
+				<li>
+					<a href="/"> <i class="fas fa-arrow-left" /></a>
+				</li>
+
+				<button
+					class="menu-btn"
+					on:click={() => (showingMenu = !showingMenu)}
+					><i class="fas fa-bars" /></button
+				>
+			</div>
+			<div class="menu" style="display: {showingMenu ? 'flex' : 'none'};">
+				<li>
+					<a
+						aria-current={$page.path === `/drivers/${path}` ||
+						$page.path === `/drivers/${path}/`
+							? path
+							: undefined}
+						on:click={() => (showingMenu = false)}
+						href="drivers/{path}"
+					>
+						Information</a
+					>
+				</li>
+				<li>
+					<a
+						aria-current={$page.path.includes("history")
+							? "history"
+							: undefined}
+						on:click={() => (showingMenu = false)}
+						href="drivers/{path}/history"
+					>
+						History</a
 					>
 				</li>
 			</div>
@@ -210,7 +246,7 @@
 		}
 
 		.menu-btn {
-			display: none
+			display: none;
 		}
 	}
 
