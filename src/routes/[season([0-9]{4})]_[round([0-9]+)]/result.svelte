@@ -25,6 +25,8 @@
     let round = data.round;
     let roundApi = data.roundApi;
 
+    let width;
+
     const getResult = async () => {
         if ($rounds[season] === undefined) {
             goto("/");
@@ -47,6 +49,8 @@
     });
 </script>
 
+<div bind:clientWidth={width} style="width: 100vw; margin: 0; padding: 0;" />
+
 {#if $rounds[season] !== undefined}
     {#if $rounds[season][round].result === undefined}
         <Loader />
@@ -58,7 +62,9 @@
             <thead>
                 <tr>
                     <th>Position</th>
-                    <th>Started</th>
+                    {#if width > 768}
+                        <th>Started</th>
+                    {/if}
                     <th>Name</th>
                     <th>Constructor</th>
                     <th>Status</th>
@@ -68,13 +74,42 @@
             <tbody>
                 {#each $rounds[season][round].result.drivers as driver}
                     <tr>
-                        <td>{driver.position}</td>
-                        <td>{driver.started}</td>
-                        <td
-                            ><a href="/drivers/{driver.driverId}"
+                        {#if width > 768}
+                            <td>{driver.position}</td>
+                            <td>{driver.started}</td>
+                        {:else if driver.position === driver.started}
+                            <td
+                                >{driver.position} (<i class="fas fa-equals" /> 0)</td
+                            >
+                        {:else if driver.started === "PIT LANE"}
+                            <td>
+                                <span class="pit-lane">{driver.position}</span>
+                                (<i class="fas fa-chevron-up" />
+                                {Math.abs(
+                                    $rounds[season][round].result.drivers
+                                        .length - driver.position
+                                )})
+                            </td>
+                        {:else if driver.started < driver.position}
+                            <td>
+                                {driver.position} (<i
+                                    class="fas fa-chevron-up"
+                                />
+                                {Math.abs(driver.position - driver.started)})
+                            </td>
+                        {:else}
+                            <td>
+                                {driver.position} (<i
+                                    class="fas fa-chevron-down"
+                                />
+                                {Math.abs(driver.started - driver.position)})
+                            </td>
+                        {/if}
+                        <td>
+                            <a href="/drivers/{driver.driverId}"
                                 >{driver.driver}</a
-                            ></td
-                        >
+                            >
+                        </td>
                         <td>{driver.constructor}</td>
                         <td>{driver.status}</td>
                         <td>{driver.points}</td>
@@ -82,7 +117,39 @@
                 {/each}
             </tbody>
         </table>
+
+        {#if width <= 768}
+            <div class="pit-lane-drivers">
+                {#if $rounds[season][round].result.drivers.filter((d) => d.started === "PIT LANE").length > 0}
+                    <h3>*: Drivers who started from the pit lane</h3>
+                    <li>
+                        {#each $rounds[season][round].result.drivers.filter((d) => d.started === "PIT LANE") as driver}
+                            <ul>{driver.driver}</ul>
+                        {/each}
+                    </li>
+                {/if}
+            </div>
+        {/if}
     {:else}
         <Loader />
     {/if}
 {/if}
+
+<style>
+    .fa-chevron-up {
+        color: green;
+    }
+
+    .fa-chevron-down {
+        color: red;
+    }
+
+    @media only screen and (max-width: 768px) {
+        .pit-lane::after {
+            content: "*";
+            font-size: 0.75rem;
+            display: inline-block;
+            vertical-align: top;
+        }
+    }
+</style>
