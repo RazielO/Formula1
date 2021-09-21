@@ -25,6 +25,9 @@
     let round = data.round;
     let roundApi = data.roundApi;
 
+    let width;
+    let selected = "Q1";
+
     const getQualy = async () => {
         if ($rounds[season] === undefined) {
             goto("/");
@@ -47,6 +50,8 @@
     });
 </script>
 
+<div bind:clientWidth={width} style="width: 100vw; margin: 0; padding: 0;" />
+
 {#if $rounds[season] !== undefined}
     {#if $rounds[season][round].qualy !== undefined && $rounds[season][round].qualy.length === 0}
         <h1>Sorry! There is no information for this race</h1>
@@ -54,30 +59,59 @@
         <h1>{season} {$rounds[season][round].name}</h1>
         <h2>Qualifying Results</h2>
 
+        {#if width <= 768}
+            <div class="sessions">
+                {#each [1, 2, 3] as session}
+                    <button
+                        name="session"
+                        on:click={() => (selected = `Q${session}`)}
+                        class={`Q${session}` === selected ? "selected" : ""}
+                    >
+                        Q{session}
+                    </button>
+                {/each}
+            </div>
+        {/if}
+
         <table>
             <thead>
                 <tr>
                     <th>Position</th>
                     <th>Name</th>
                     <th>Constructor</th>
-                    <th>Q1</th>
-                    <th>Q2</th>
-                    <th>Q3</th>
+                    {#if width > 768}
+                        <th>Q1</th>
+                        <th>Q2</th>
+                        <th>Q3</th>
+                    {:else}
+                        <th>{selected.toUpperCase()}</th>
+                    {/if}
                 </tr>
             </thead>
             <tbody>
                 {#each $rounds[season][round].qualy as driver}
                     <tr>
-                        <td>{driver.position}</td>
-                        <td
-                            ><a href="/drivers/{driver.driverId}"
-                                >{driver.driver}</a
-                            ></td
-                        >
-                        <td>{driver.constructor}</td>
-                        <td>{driver.q1}</td>
-                        <td>{driver.q2}</td>
-                        <td>{driver.q3}</td>
+                        {#if width > 768}
+                            <td>{driver.position}</td>
+                            <td
+                                ><a href="/drivers/{driver.driverId}"
+                                    >{driver.driver}</a
+                                ></td
+                            >
+                            <td>{driver.constructor}</td>
+                            <td>{driver.q1}</td>
+                            <td>{driver.q2}</td>
+                            <td>{driver.q3}</td>
+                        {:else if driver[selected.toLowerCase()] !== ""}
+                            <td>{driver.position}</td>
+                            <td
+                                ><a href="/drivers/{driver.driverId}"
+                                    >{driver.driver}</a
+                                ></td
+                            >
+                            <td>{driver.constructor}</td>
+                            <td>{driver[selected.toLowerCase()]}</td>
+                        {/if}
                     </tr>
                 {/each}
             </tbody>
@@ -86,3 +120,21 @@
         <Loader />
     {/if}
 {/if}
+
+<style>
+    .sessions {
+        display: flex;
+        justify-content: space-evenly;
+        margin-bottom: 1rem;
+    }
+
+    .sessions > button {
+        border: none;
+        padding: 0.25rem 1rem;
+        border-radius: 10rem;
+    }
+
+    .selected {
+        border: 1px solid rgb(255, 62, 0) !important;
+    }
+</style>
