@@ -8,7 +8,10 @@
 
     onMount(async () => {
         lastSeason = new Date().getFullYear();
-        seasonSelected.set(lastSeason);
+
+        if ($seasonSelected === undefined) {
+            seasonSelected.set(lastSeason);
+        }
 
         if ($startSeason === undefined) {
             let response = await fetch(
