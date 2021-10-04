@@ -46,7 +46,7 @@
             {#each $rounds[$seasonSelected] as race}
                 <tr>
                     <td>{race.round}</td>
-                    <td>{race.name}</td>
+                    <td>{race.name.replace('Grand Prix', 'GP')}</td>
                     <td>
                         <div class="tooltip">
                             {race.circuit}
