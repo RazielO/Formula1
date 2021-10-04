@@ -138,4 +138,11 @@
         gap: 1rem;
         align-items: center;
     }
+
+	@media only screen and (max-width: 768px) {
+        .driver {
+            grid-template-columns: 1fr;
+            grid-template-rows: 1fr 1fr;
+        }
+    }
 </style>
