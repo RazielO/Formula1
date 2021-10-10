@@ -34,6 +34,7 @@
     let maxLap;
     let prevMax;
     let chart;
+    let canvasHeight = 400;
 
     const getLaps = async () => {
         if ($rounds[season] === undefined) {
@@ -133,6 +134,19 @@
                 datasets: parseLaps($rounds[season][round].laps),
             },
             options: {
+                maintainAspectRatio: false,
+                onResize: (chart, size) => {
+                    if (size.width < 400) {
+                        canvasHeight = 400;
+                        maxLap = minLap + 5;
+                    } else if (size.width < 600) {
+                        maxLap = minLap + 10;
+                    } else {
+                        canvasHeight = 400;
+                    }
+                    chart.canvas.parentNode.style.height = `${canvasHeight}px`;
+                    chart.height = canvasHeight;
+                },
                 scales: {
                     x: {
                         beginAtZero: false,
@@ -143,6 +157,25 @@
                         min: 1,
                         max: $rounds[season][round].result.drivers.length,
                         offset: true,
+                    },
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                return `Lap ${context.label}`;
+                            },
+                            title: (context) => {
+                                let code = context[0].dataset.label;
+                                let key = Object.keys($drivers).filter(
+                                    (k) => $drivers[k].code === code
+                                )[0];
+                                return $drivers[key].name;
+                            },
+                            footer: (context) => {
+                                return `Position: ${context[0].formattedValue}`;
+                            },
+                        },
                     },
                 },
             },
@@ -193,9 +226,11 @@
                 />
             </p>
 
-            <Canvas width={640} height={300}>
-                <Layer {setup} {render} />
-            </Canvas>
+            <div>
+                <Canvas>
+                    <Layer {setup} {render} />
+                </Canvas>
+            </div>
         {:else}
             <Loader />
         {/if}
@@ -205,3 +240,16 @@
 {:else}
     <Loader />
 {/if}
+
+<style>
+    input[type="number"] {
+        border: none;
+        border-bottom-color: currentcolor;
+        border-bottom-style: none;
+        border-bottom-width: medium;
+        border-bottom: 1px solid black;
+        width: 5rem;
+        font-size: 1rem;
+        text-align: center;
+    }
+</style>
