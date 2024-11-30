@@ -1,3 +1,14 @@
+export type BackgroundChild = {
+    title: string,
+    text: string
+}
+
+export type RaceBackground = {
+    text: string,
+    children: BackgroundChild[],
+    url: string | null
+}
+
 export type Event = {
     date: string,
     time: string
@@ -28,6 +39,8 @@ export type Race = {
     SecondPractice: Event,
     ThirdPractice: Event,
     Qualifying: Event,
+    hasBackground: boolean,
+    background: RaceBackground
 }
 
 export type RaceTable = {
