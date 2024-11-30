@@ -14,7 +14,7 @@ export default {
 	plugins: [
 		typography,
 		skeleton({
-			themes: [themes.terminus]
+			themes: [themes.concord]
 		})
 	]
 } satisfies Config;
