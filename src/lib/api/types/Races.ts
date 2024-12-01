@@ -39,13 +39,16 @@ export type Race = {
     date: string,
     time: string,
     FirstPractice: Event,
-    SecondPractice: Event,
-    ThirdPractice: Event,
+    SecondPractice: Event | undefined,
+    ThirdPractice: Event | undefined,
     Qualifying: Event,
+    Sprint: Event | undefined,
+    SprintQualifying: Event | undefined,
     hasBackground: boolean,
     background: RaceBackground,
     QualifyingResults: QualifyingResult[],
-    Results: RaceResult[]
+    Results: RaceResult[],
+    SprintResults: RaceResult[]
 }
 
 export type RaceTable = {

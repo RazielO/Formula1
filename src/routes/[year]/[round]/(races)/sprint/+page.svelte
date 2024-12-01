@@ -3,6 +3,7 @@
 	import type { RaceResult } from '$lib/api/types/RaceResult';
 	import Loader from '$lib/components/Loader.svelte';
 	import { rounds } from '$lib/stores';
+	import { timeToMilliseconds } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { onMount } from 'svelte';
 
@@ -12,18 +13,18 @@
 	let fastest: RaceResult | undefined = $state();
 
 	onMount(async () => {
-		const info = await Consumer.getRaceResults(year, round + 1);
+		const info = await Consumer.getSprintResults(year, round + 1);
+
 		rounds.update((value) => {
-			$rounds[year][round].Results = info;
+			$rounds[year][round].SprintResults = info;
 			return value;
 		});
-		
 		fastest = info.filter(r => r.FastestLap.rank === "1")[0];
 	});
 </script>
 
-{#if $rounds[year] !== undefined && $rounds[year][round] !== undefined && $rounds[year][round].Results !== undefined}
-	{#if $rounds[year][round].Results.length === 0}
+{#if $rounds[year] !== undefined && $rounds[year][round] !== undefined && $rounds[year][round].SprintResults !== undefined}
+	{#if $rounds[year][round].SprintResults.length === 0}
 		<h1 class="mb-4 text-4xl font-bold">Sorry! There is no information for this race</h1>
 	{:else}
 		<h1 class="mb-4 text-4xl font-bold">{year} {$rounds[year][round].raceName}</h1>
@@ -42,7 +43,7 @@
 			</div>
 		{/if}
 
-		<h2 class="mb-1 text-2xl font-bold">Race results</h2>
+		<h2 class="mb-1 text-2xl font-bold">Sprint results</h2>
 
 		<table class="mb-16 table">
 			<thead>
@@ -55,7 +56,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each $rounds[year][round].Results as result, i}
+				{#each $rounds[year][round].SprintResults as result, i}
 					<tr>
 						<td>
 							<div class="flex items-center">

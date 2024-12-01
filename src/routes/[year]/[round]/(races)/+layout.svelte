@@ -29,6 +29,8 @@
 				active = 1;
 			} else if (url.includes('results')) {
 				active = 2;
+			} else if (url.includes('sprint')) {
+				active = 3;
 			}
 		});
 	});
@@ -43,6 +45,9 @@
 			<a href="/{year}/{round}/background" class:underline={active === 0}>Background</a>
 			<a href="/{year}/{round}/qualy" class:underline={active === 1}>Qualy</a>
 			<a href="/{year}/{round}/results" class:underline={active === 2}>Results</a>
+			{#if $rounds[year][round].Sprint !== undefined}
+				<a href="/{year}/{round}/sprint" class:underline={active === 3}>Sprint</a>
+			{/if}
 		</div>
 	</Header>
 
