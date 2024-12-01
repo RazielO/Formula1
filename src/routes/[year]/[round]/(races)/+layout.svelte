@@ -27,6 +27,8 @@
 				active = 0;
 			} else if (url.includes('qualy')) {
 				active = 1;
+			} else if (url.includes('results')) {
+				active = 2;
 			}
 		});
 	});
@@ -40,6 +42,7 @@
 			</a>
 			<a href="/{year}/{round}/background" class:underline={active === 0}>Background</a>
 			<a href="/{year}/{round}/qualy" class:underline={active === 1}>Qualy</a>
+			<a href="/{year}/{round}/results" class:underline={active === 2}>Results</a>
 		</div>
 	</Header>
 

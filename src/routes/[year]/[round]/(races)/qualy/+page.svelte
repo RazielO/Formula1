@@ -2,21 +2,12 @@
 	import { Consumer } from '$lib/api/consumer';
 	import Loader from '$lib/components/Loader.svelte';
 	import { rounds } from '$lib/stores';
+	import { timeToMilliseconds } from '$lib/utils';
 	import { onMount } from 'svelte';
 
 	let { data }: { data: { year: number; round: number } } = $props();
 	const year = data.year;
 	const round = data.round;
-
-	function timeToMilliseconds(time: string): number {
-		const [minutes, rest] = time.split(':');
-		const [seconds, milliseconds] = rest.split('.');
-		return (
-			parseInt(minutes, 10) * 60 * 1000 + // Convert minutes to milliseconds
-			parseInt(seconds, 10) * 1000 + // Convert seconds to milliseconds
-			parseInt(milliseconds, 10) // Add milliseconds
-		);
-	}
 
 	type Times = {
 		name: string;
@@ -98,7 +89,7 @@
 
 		{#if !oneRunOnly}
 			<nav
-				class="btn-group preset-outlined-surface-200-800 my-4 flex-col justify-between p-2 md:flex-row"
+				class="btn-group preset-outlined-surface-200-800 my-4 flex-row justify-between p-2 md:flex-row"
 			>
 				<button
 					type="button"
@@ -138,12 +129,12 @@
 				</button>
 			</nav>
 		{/if}
-		<table class="mb-16 table" style="font-size: 10pt;">
+		<table class="mb-16 table">
 			<thead>
 				<tr>
-					<th>Position</th>
+					<th>Pos.</th>
 					<th>Name</th>
-					<th>Constructor</th>
+					<th class="constructor-column">Constructor</th>
 					<th>Time</th>
 				</tr>
 			</thead>
@@ -152,7 +143,7 @@
 					<tr>
 						<td>{i + 1}</td>
 						<td>{time.name}</td>
-						<td>{time.constructor}</td>
+						<td class="constructor-column">{time.constructor}</td>
 						<td>{time.time}</td>
 					</tr>
 				{/each}
@@ -162,3 +153,11 @@
 {:else}
 	<Loader />
 {/if}
+
+<style>
+	@media (max-width: 500px) {
+		.constructor-column {
+			display: none;
+		}
+	}
+</style>

@@ -1,4 +1,5 @@
 import type { QualifyingResult } from "./QualifyingResult"
+import type { RaceResult } from "./RaceResult"
 
 export type BackgroundChild = {
     title: string,
@@ -43,7 +44,8 @@ export type Race = {
     Qualifying: Event,
     hasBackground: boolean,
     background: RaceBackground,
-    QualifyingResults: QualifyingResult[]
+    QualifyingResults: QualifyingResult[],
+    Results: RaceResult[]
 }
 
 export type RaceTable = {
