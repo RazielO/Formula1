@@ -1,27 +1,52 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import Header from '$lib/components/Header.svelte';
-	import { darkMode } from '$lib/stores';
+	import { darkMode, rounds } from '$lib/stores';
 	import Icon from '@iconify/svelte';
-	import type { Snippet } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
+	import '../../../../app.css';
+	import { goto } from '$app/navigation';
 
 	let { data, children }: { data: { year: number; round: number }; children: Snippet<[]> } =
 		$props();
 	const year = data.year;
 	const round = data.round;
+
+	let active = $state(0);
+
+	onMount(() => {
+		if ($rounds[year] === undefined) {
+			goto('/');
+		} else if ($rounds[year][round] === undefined) {
+			goto('/');
+		}
+
+		page.subscribe((value) => {
+			const url = value.url.href;
+			if (url.includes('background')) {
+				active = 0;
+			} else if (url.includes('qualy')) {
+				active = 1;
+			}
+		});
+	});
 </script>
 
 <div class="{$darkMode ? 'dark' : ''} h-full">
 	<Header>
-		<div class="flex items-center">
-			<button class="btn">
+		<div class="flex items-center gap-2">
+			<a href="/" class="btn">
 				<Icon icon="ion:arrow-back" height="1.5rem" />
-			</button>
-			<a href="/{year}/{round}/background">Background</a>
+			</a>
+			<a href="/{year}/{round}/background" class:underline={active === 0}>Background</a>
+			<a href="/{year}/{round}/qualy" class:underline={active === 1}>Qualy</a>
 		</div>
 	</Header>
 
-	<main class="flex h-full justify-center bg-zinc-100 dark:bg-zinc-700 dark:text-zinc-100">
-		<div class="max-w-[50rem] py-8">
+	<main
+		class="flex h-full justify-center overflow-x-clip overflow-y-scroll bg-zinc-100 dark:bg-zinc-700 dark:text-zinc-100"
+	>
+		<div class="max-w-[50rem] px-4 py-8">
 			{@render children()}
 		</div>
 	</main>

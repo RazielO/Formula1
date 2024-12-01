@@ -12,7 +12,9 @@
 		<SeasonSelector />
 	</Header>
 
-	<main class="flex h-full justify-center bg-zinc-100 dark:bg-zinc-700 dark:text-zinc-100">
+	<main
+		class="flex h-full justify-center overflow-x-clip overflow-y-scroll bg-zinc-100 dark:bg-zinc-700 dark:text-zinc-100"
+	>
 		<div class="max-w-[50rem] py-8">
 			{@render children()}
 		</div>

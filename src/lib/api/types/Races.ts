@@ -1,3 +1,5 @@
+import type { QualifyingResult } from "./QualifyingResult"
+
 export type BackgroundChild = {
     title: string,
     text: string
@@ -40,7 +42,8 @@ export type Race = {
     ThirdPractice: Event,
     Qualifying: Event,
     hasBackground: boolean,
-    background: RaceBackground
+    background: RaceBackground,
+    QualifyingResults: QualifyingResult[]
 }
 
 export type RaceTable = {

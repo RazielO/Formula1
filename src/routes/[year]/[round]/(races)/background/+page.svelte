@@ -10,24 +10,13 @@
 	const year = data.year;
 	const round = data.round;
 
-	let info: { hasBackground: boolean; background: RaceBackground } = $state({
-		hasBackground: false,
-		background: { text: '', children: [], url: null }
-	});
-
 	onMount(async () => {
-		if ($rounds[year] === undefined) {
-			goto('/');
-		} else if ($rounds[year][round] === undefined) {
-			goto('/');
-		} else {
-			info = await fetchBackground($rounds[year][round - 1].url);
-			rounds.update((value) => {
-				value[year][round].hasBackground = info.hasBackground;
-				value[year][round].background = info.background;
-				return value;
-			});
-		}
+		const info = await fetchBackground($rounds[year][round].url);
+		rounds.update((value) => {
+			value[year][round].hasBackground = info.hasBackground;
+			value[year][round].background = info.background;
+			return value;
+		});
 	});
 </script>
 
@@ -55,7 +44,9 @@
 	{/each}
 
 	<small>
-		Info obtained from <a class="underline" href={$rounds[year][round].background.url}>wikipedia</a>
+		Info obtained from <a class="underline" target="_blank" href={$rounds[year][round].url}
+			>wikipedia</a
+		>
 	</small>
 {:else}
 	<Loader />
