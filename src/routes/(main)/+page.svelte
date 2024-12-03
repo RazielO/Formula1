@@ -30,12 +30,13 @@
 {#if $seasonSelected !== undefined && $rounds[$seasonSelected] !== undefined}
 	<h1 class="text-4xl font-bold">{$seasonSelected} Formula One World Championship</h1>
 	<h2 class="text-2xl">Races</h2>
-	<table class="table">
+
+	<table class="mb-16 table">
 		<thead>
 			<tr>
-				<th>No.</th>
+				<th class="round-column">No.</th>
 				<th>GP</th>
-				<th>Circuit</th>
+				<th class="circuit-column">Circuit</th>
 				<th></th>
 				<th></th>
 			</tr>
@@ -43,9 +44,9 @@
 		<tbody>
 			{#each $rounds[$seasonSelected] as race}
 				<tr>
-					<td>{race.round}</td>
+					<td class="round-column">{race.round}</td>
 					<td>{race.raceName.replace('Grand Prix', 'GP')}</td>
-					<td>
+					<td class="circuit-column">
 						<div class="tooltip">
 							<Tooltip
 								open={false}
@@ -76,3 +77,11 @@
 {:else}
 	<Loader />
 {/if}
+
+<style>
+	@media (max-width: 600px) {
+		.circuit-column {
+			display: none;
+		}
+	}
+</style>

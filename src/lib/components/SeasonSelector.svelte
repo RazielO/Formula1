@@ -24,7 +24,7 @@
 </script>
 
 {#if lastSeason !== undefined && $startSeason !== undefined}
-	<select class="select w-24 px-4" bind:value={$seasonSelected}>
+	<select class="select w-24 px-4 h-8 my-auto sm:h-12" bind:value={$seasonSelected}>
 		{#each createRange($startSeason, lastSeason).reverse() as season}
 			<option value={season}>{season}</option>
 		{/each}

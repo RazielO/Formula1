@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import type { RaceBackground } from '$lib/api/types/Races';
 	import { fetchBackground } from '$lib/api/wikipedia';
 	import Loader from '$lib/components/Loader.svelte';
 	import { rounds } from '$lib/stores';

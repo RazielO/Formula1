@@ -4,19 +4,22 @@
 	import type { Snippet } from 'svelte';
 	import '../../app.css';
 	import SeasonSelector from '$lib/components/SeasonSelector.svelte';
+	import MainContainer from '$lib/components/MainContainer.svelte';
 	let { children }: { children: Snippet<[]> } = $props();
 </script>
 
 <div class="{$darkMode ? 'dark' : ''} h-full">
 	<Header>
-		<SeasonSelector />
+		{#snippet lead()}
+			<SeasonSelector />
+		{/snippet}
+
+		{#snippet links()}
+			<div></div>
+		{/snippet}
 	</Header>
 
-	<main
-		class="flex h-full justify-center overflow-x-clip overflow-y-scroll bg-zinc-100 dark:bg-zinc-700 dark:text-zinc-100"
-	>
-		<div class="max-w-[50rem] py-8">
-			{@render children()}
-		</div>
-	</main>
+	<MainContainer>
+		{@render children()}
+	</MainContainer>
 </div>

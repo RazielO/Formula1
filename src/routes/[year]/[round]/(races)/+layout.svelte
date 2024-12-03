@@ -1,11 +1,15 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { Consumer } from '$lib/api/consumer';
+	import type { Race } from '$lib/api/types/Races';
 	import Header from '$lib/components/Header.svelte';
+	import HeaderLink from '$lib/components/HeaderLink.svelte';
+	import MainContainer from '$lib/components/MainContainer.svelte';
 	import { darkMode, rounds } from '$lib/stores';
 	import Icon from '@iconify/svelte';
 	import { onMount, type Snippet } from 'svelte';
 	import '../../../../app.css';
-	import { goto } from '$app/navigation';
 
 	let { data, children }: { data: { year: number; round: number }; children: Snippet<[]> } =
 		$props();
@@ -13,13 +17,23 @@
 	const round = data.round;
 
 	let active = $state(0);
+	let light = $state(true);
 
-	onMount(() => {
-		if ($rounds[year] === undefined) {
+	onMount(async () => {
+		if (year === undefined || round === undefined) {
 			goto('/');
+		} else if (year !== undefined && ($rounds[year] === undefined || $rounds[year].length === 0)) {
+			let races: Race[] = await Consumer.getRaces(year);
+
+			rounds.update((value) => {
+				value[year] = races;
+				return value;
+			});
 		} else if ($rounds[year][round] === undefined) {
 			goto('/');
 		}
+
+		darkMode.subscribe((value) => (light = !value));
 
 		page.subscribe((value) => {
 			const url = value.url.href;
@@ -38,24 +52,46 @@
 
 <div class="{$darkMode ? 'dark' : ''} h-full">
 	<Header>
-		<div class="flex items-center gap-2">
-			<a href="/" class="btn">
+		{#snippet lead()}
+			<a href="/" class="btn justify-self-start">
 				<Icon icon="ion:arrow-back" height="1.5rem" />
 			</a>
-			<a href="/{year}/{round}/background" class:underline={active === 0}>Background</a>
-			<a href="/{year}/{round}/qualy" class:underline={active === 1}>Qualy</a>
-			<a href="/{year}/{round}/results" class:underline={active === 2}>Results</a>
-			{#if $rounds[year][round].Sprint !== undefined}
-				<a href="/{year}/{round}/sprint" class:underline={active === 3}>Sprint</a>
+		{/snippet}
+
+		{#snippet links()}
+			<HeaderLink
+				href="/{year}/{round}/background"
+				active={active === 0}
+				icon="fa:info"
+				text="Background"
+			/>
+
+			<HeaderLink
+				href="/{year}/{round}/qualy"
+				active={active === 1}
+				icon="octicon:stopwatch-16"
+				text="Qualy"
+			/>
+
+			<HeaderLink
+				href="/{year}/{round}/results"
+				active={active === 2}
+				icon="icons8:finish-flag"
+				text="Results"
+			/>
+
+			{#if $rounds[year] !== undefined && $rounds[year][round - 1] !== undefined && $rounds[year][round - 1].Sprint !== undefined}
+				<HeaderLink
+					href="/{year}/{round}/sprint"
+					active={active === 3}
+					icon="icons8:finish-flag"
+					text="Sprint"
+				/>
 			{/if}
-		</div>
+		{/snippet}
 	</Header>
 
-	<main
-		class="flex h-full justify-center overflow-x-clip overflow-y-scroll bg-zinc-100 dark:bg-zinc-700 dark:text-zinc-100"
-	>
-		<div class="max-w-[50rem] px-4 py-8">
-			{@render children()}
-		</div>
-	</main>
+	<MainContainer>
+		{@render children()}
+	</MainContainer>
 </div>
