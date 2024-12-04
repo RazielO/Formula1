@@ -1,3 +1,4 @@
+import type { StandingsTable } from "./Standings"
 import type { RaceTable } from "./Races"
 import type { SeasonTable } from "./Seasons"
 
@@ -9,5 +10,6 @@ export type MRData = {
     offset: string,
     total: string,
     SeasonTable: SeasonTable | undefined,
-    RaceTable: RaceTable | undefined
+    RaceTable: RaceTable | undefined,
+    StandingsTable: StandingsTable | undefined
 }
