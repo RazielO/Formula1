@@ -1,8 +1,8 @@
-import type { PageLoad } from "./$types";
+import type { PageLoad } from './$types';
 
 export const load: PageLoad = ({ params }) => {
-    return {
-        year: parseInt(params.year),
-        round: parseInt(params.round) - 1
-    }
+  return {
+    year: parseInt(params.year),
+    round: parseInt(params.round) - 1,
+  };
 };

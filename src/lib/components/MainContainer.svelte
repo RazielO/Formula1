@@ -1,13 +1,13 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+  import type { Snippet } from 'svelte';
 
-	let { children }: { children: Snippet<[]> } = $props();
+  let { children }: { children: Snippet<[]> } = $props();
 </script>
 
 <main
-	class="mb-16 flex h-full justify-center overflow-x-clip overflow-y-scroll bg-zinc-100 dark:bg-zinc-700 dark:text-zinc-100"
+  class="mb-16 flex h-full justify-center overflow-x-clip overflow-y-scroll bg-zinc-100 dark:bg-zinc-700 dark:text-zinc-100"
 >
-	<div class="max-w-[50rem] px-4 py-8">
-		{@render children()}
-	</div>
+  <div class="max-w-[50rem] px-4 py-8">
+    {@render children()}
+  </div>
 </main>

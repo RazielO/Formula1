@@ -1,9 +1,9 @@
-import type { Constructor } from "./Constructor"
+import type { Constructor } from './Constructor';
 
 export type ConstructorStanding = {
-    position: string,
-    positionText: string,
-    points: string,
-    wins: string,
-    Constructor: Constructor
-}
+  position: string;
+  positionText: string;
+  points: string;
+  wins: string;
+  Constructor: Constructor;
+};
