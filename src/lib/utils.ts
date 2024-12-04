@@ -10,6 +10,6 @@ export function timeToMilliseconds(time: string): number {
             parseInt(milliseconds, 10) // Add milliseconds
         );
     } catch (error) {
-        return 0;
+        return Number.MAX_VALUE;
     }
 }

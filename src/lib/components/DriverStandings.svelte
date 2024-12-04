@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { DriverStanding } from '$lib/api/types/DriverStanding';
-	import { nationalities } from '$lib/stores';
+		import { nationalities } from "$lib/nationalities";
 	import Icon from '@iconify/svelte';
 
 	let { drivers }: { drivers: DriverStanding[] } = $props();
@@ -17,7 +17,7 @@
 	}
 </script>
 
-<table class="table mb-16">
+<table class="table">
 	<thead>
 		<tr>
 			<th class="round-column">Pos.</th>

@@ -1,12 +1,12 @@
 <script lang="ts">
 	import type { ConstructorStanding } from '$lib/api/types/ConstructorStanding';
-	import { nationalities } from '$lib/stores';
+	import { nationalities } from '$lib/nationalities';
 	import Icon from '@iconify/svelte';
 
 	let { constructors }: { constructors: ConstructorStanding[] } = $props();
 </script>
 
-<table class="table mb-16">
+<table class="table">
 	<thead>
 		<tr>
 			<th class="round-column">Pos.</th>
