@@ -50,7 +50,7 @@
 <div class="{$darkMode ? 'dark' : ''} h-full">
   <Header>
     {#snippet lead()}
-      <a href="/" class="btn justify-self-start">
+      <a href="/">
         <Icon icon="ion:arrow-back" height="1.5rem" />
       </a>
     {/snippet}
