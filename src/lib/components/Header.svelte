@@ -14,7 +14,7 @@
 <header
   class="grid-rows-[auto, auto] top-0 z-10 grid w-full grid-cols-2 items-center justify-between space-y-4 bg-zinc-300 px-4 dark:bg-zinc-900 dark:text-zinc-100 sm:flex sm:px-0 sm:py-0 sm:pb-4"
 >
-  <div class="h-12 sm:h-auto justify-self-start">
+  <div class="h-12 justify-self-start sm:h-auto">
     {#if lead !== undefined}
       <div class="btn">
         {@render lead()}
@@ -35,7 +35,9 @@
     <ThemeToggle />
   </nav>
 
-  <div class="h-12 sm:h-auto justify-self-start opacity-0 disable pointer-events-none hidden sm:block">
+  <div
+    class="disable pointer-events-none hidden h-12 justify-self-start opacity-0 sm:block sm:h-auto"
+  >
     {#if lead !== undefined}
       <div class="btn">
         {@render lead()}

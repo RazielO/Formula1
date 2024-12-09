@@ -1,3 +1,5 @@
+import type { ConstructorStanding } from './ConstructorStanding';
+import type { DriverStanding } from './DriverStanding';
 import type { QualifyingResult } from './QualifyingResult';
 import type { RaceResult } from './RaceResult';
 
@@ -49,6 +51,8 @@ export type Race = {
   QualifyingResults: QualifyingResult[];
   Results: RaceResult[];
   SprintResults: RaceResult[];
+  constructorStandings: ConstructorStanding[];
+  driverStandings: DriverStanding[];
 };
 
 export type RaceTable = {

@@ -42,6 +42,8 @@
         active = 2;
       } else if (url.includes('sprint')) {
         active = 3;
+      } else if (url.includes('standings')) {
+        active = 4;
       }
     });
   });
@@ -85,6 +87,13 @@
           text="Sprint"
         />
       {/if}
+
+      <HeaderLink
+        href="/{year}/{round}/standings"
+        text="Standings"
+        active={active === 4}
+        icon="material-symbols:trophy-outline"
+      />
     {/snippet}
   </Header>
 
